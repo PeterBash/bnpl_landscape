@@ -16,7 +16,7 @@ category_colors = {  # New distinct colors for categories
 }
 
 # Load dataset
-data_path = 'retailers_bnpl_dataset_with_providers.csv'  # Replace with your file path
+data_path = 'retailers_bnpl_dataset_with_providers.csv'
 df = pd.read_csv(data_path)
 
 # Define metrics
