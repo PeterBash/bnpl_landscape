@@ -16,7 +16,7 @@ category_colors = {  # New distinct colors for categories
 }
 
 # Load dataset
-data_path = '/Users/peterkihara/Downloads/retailers_bnpl_dataset_with_providers.csv'  # Replace with your file path
+data_path = 'retailers_bnpl_dataset_with_providers.csv'  # Replace with your file path
 df = pd.read_csv(data_path)
 
 # Define metrics
@@ -230,24 +230,19 @@ ax.set_xlabel("Product Category")
 st.pyplot(fig)
 
 st.header("Tier Distribution of BNPL Players")
-st.write("Insight: This chart displays the percentage of retail merchants for the selected BNPL player distributed across different tiers (Top 10, Top 11-100, Top 101-1000, 1000+).")
-if selected_bnpl_provider in metrics['market_share_count'].columns:
-    player_tier_data = {
-        "Top 10": filtered_player_df[filtered_player_df['Retailer rank'] <= 10].shape[0],
-        "Top 11-100": filtered_player_df[(filtered_player_df['Retailer rank'] > 10) & (filtered_player_df['Retailer rank'] <= 100)].shape[0],
-        "Top 101-1000": filtered_player_df[(filtered_player_df['Retailer rank'] > 100) & (filtered_player_df['Retailer rank'] <= 1000)].shape[0],
-        "1000+": filtered_player_df[filtered_player_df['Retailer rank'] > 1000].shape[0]
-    }
-    player_tier_df = pd.DataFrame(player_tier_data, index=[selected_bnpl_provider]).T
-    player_tier_df = player_tier_df / player_tier_df.sum() * 100
+st.write("Insight: This chart displays the percentage of retail merchants for the selected BNPL player distributed across different tiers (Top 10, Top 11-100, Top 101-1000, and 1000+).")
+filtered_player_tiers = {
+    "Top 10": filtered_player_df[filtered_player_df['Retailer rank'] <= 10].shape[0],
+    "Top 11-100": filtered_player_df[(filtered_player_df['Retailer rank'] > 10) & (filtered_player_df['Retailer rank'] <= 100)].shape[0],
+    "Top 101-1000": filtered_player_df[(filtered_player_df['Retailer rank'] > 100) & (filtered_player_df['Retailer rank'] <= 1000)].shape[0],
+    "1000+": filtered_player_df[filtered_player_df['Retailer rank'] > 1000].shape[0],
+}
 
-    fig, ax = plt.subplots()
-    player_tier_df.plot(kind='bar', stacked=True, color=riverty_colors[3:7], ax=ax)
-    ax.set_title(f"Tier Distribution for {selected_bnpl_provider}")
-    ax.set_ylabel("% Share")
-    ax.set_xlabel("Tier")
-    ax.legend(title="Tier", bbox_to_anchor=(1.05, 1), loc='upper left')
-    st.pyplot(fig)
-else:
-    st.write("No data available for the selected BNPL provider.")
-
+player_tier_df = pd.DataFrame.from_dict(filtered_player_tiers, orient='index', columns=['Count'])
+player_tier_df['Percentage'] = (player_tier_df['Count'] / player_tier_df['Count'].sum()) * 100
+fig, ax = plt.subplots()
+player_tier_df['Percentage'].plot(kind='bar', color=green_shades, ax=ax)
+ax.set_title(f"Tier Distribution for {selected_bnpl_provider}")
+ax.set_ylabel("% Share")
+ax.set_xlabel("Retailer Tier")
+st.pyplot(fig)
