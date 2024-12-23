@@ -16,7 +16,7 @@ category_colors = {  # New distinct colors for categories
 }
 
 # Load dataset
-data_path = 'retailers_bnpl_dataset_with_providers.csv'
+data_path = 'retailers_bnpl_dataset_with_providers.csv'  # Replace with your file path
 df = pd.read_csv(data_path)
 
 # Define metrics
@@ -60,8 +60,6 @@ def calculate_metrics(df):
 metrics = calculate_metrics(df)
 
 # Modify data to reflect new assumptions
-# Define new revenue contribution assumptions
-
 def adjust_heatmap_data(df, metrics):
     heatmap_data_list = []
 
@@ -104,6 +102,13 @@ st.title("BNPL Market Analysis Dashboard")
 
 # Filters
 st.sidebar.header("Filters")
+
+# Year filter
+st.sidebar.subheader("Year")
+years_available = sorted(df['Year'].unique())  # Ensure the Year column exists in your dataset
+selected_year = st.sidebar.selectbox("Select Year", options=years_available, index=years_available.index(2023))
+
+# Regions filter
 st.sidebar.subheader("Regions")
 regions = {
     "DACH": ["DE", "AT", "CH"],
@@ -121,7 +126,8 @@ selected_bnpl_provider = st.sidebar.selectbox("Select BNPL Provider", options=df
 # Apply filters
 filtered_df = df[(df['Country'].isin(selected_country)) &
                  (df['Product Category'].isin(selected_category)) &
-                 (df['BNPL type'].isin(selected_bnpl_type))]
+                 (df['BNPL type'].isin(selected_bnpl_type)) &
+                 (df['Year'] == selected_year)]
 
 # Recalculate metrics with filtered data
 filtered_metrics = calculate_metrics(filtered_df)
@@ -246,3 +252,4 @@ ax.set_title(f"Tier Distribution for {selected_bnpl_provider}")
 ax.set_ylabel("% Share")
 ax.set_xlabel("Retailer Tier")
 st.pyplot(fig)
+
