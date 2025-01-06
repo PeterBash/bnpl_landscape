@@ -17,7 +17,7 @@ category_colors = {
 }
 
 # Load dataset
-data_path = '/Users/peterkihara/Desktop/Github/BNPL_analysis/retailers_bnpl_dataset_with_providers.csv'  # Replace with your file path
+data_path = 'retailers_bnpl_dataset_with_providers.csv'  # Replace with your file path
 df = pd.read_csv(data_path)
 
 
